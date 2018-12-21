@@ -38,55 +38,37 @@ class LinkCalc:
     dist_km = None
     tx_ant_gain = None
     rx_ant_gain = None
-    radio_sensitivity = None
-    radio_tx_power = None
+    radio = None
 
-    def __init__(self, freq_MHz, dist_km, tx_ant_gain, rx_ant_gain, radio_tx_power, radio_sensitivity):
+    def __init__(self, freq_MHz, dist_km, tx_ant_gain, rx_ant_gain, radio):
         self.freq_MHz = freq_MHz
         self.dist_km = dist_km
         self.tx_ant_gain = tx_ant_gain
         self.rx_ant_gain = rx_ant_gain
-        self.radio_tx_power = radio_tx_power
-        self.radio_sensitivity = radio_sensitivity
+        self.radio = radio
 
     def margin(self, dist_km=None):
         if dist_km is None:
             dist_km = self.dist_km
-        eirp = self.radio_tx_power+self.tx_ant_gain
+        eirp = self.radio.tx_power+self.tx_ant_gain
         pg = -1*fspl(self.freq_MHz, dist_km)
-        return eirp + pg + self.rx_ant_gain - self.radio_sensitivity
+        return eirp + pg + self.rx_ant_gain - self.radio.rx_sens
 
     def distance(self, margin_dB=3):
-        acceptable_pl = self.radio_tx_power + self.tx_ant_gain + self.rx_ant_gain - self.radio_sensitivity - margin_dB
+        acceptable_pl = self.radio.tx_power + self.tx_ant_gain + self.rx_ant_gain - self.radio.rx_sens - margin_dB
         dist_m = 10 ** ((acceptable_pl + 20 * log10(300000000 / (4 * pi * self.freq_MHz * 1000000))) / 20)
         return dist_m/1000.0
 
-class tx:
-    ant_gain = None
-    power = None
 
-    def __init__(self, ant_gain, power):
-        self.ant_gain = ant_gain
-        self.power = power
+class Radio:
+    rx_sens = None
+    tx_power = None
 
-
-class rx:
-    ant_gain = None
-    sens = None
-
-    def __init__(self, ant_gain, sens):
-        self.ant_gain = ant_gain
-        self.sens = sens
+    def __init__(self, rx_sens, tx_power):
+        self.rx_sens = rx_sens
+        self.tx_power = tx_power
 
 
-class station:
-    tx = None
-    rx = None
-
-    def __init__(self, tx, rx):
-        self.tx = tx
-        self.rx = rx
-
-class antenna:
+class Antenna:
     def gain(self, freq):
         pass

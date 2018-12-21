@@ -9,10 +9,12 @@ class TestLinkCalc(TestCase):
         tx_ant_gain = 0
         rx_ant_gain = 0
         tx_power = 0
+        sens = -110.44
+        radio = RFTools.Radio(sens, tx_power)
         distance = 2
         freq = 5000
-        sens = -110.44
-        lc = RFTools.LinkCalc(freq, distance, tx_ant_gain, rx_ant_gain, tx_power, sens)
+
+        lc = RFTools.LinkCalc(freq, distance, tx_ant_gain, rx_ant_gain, radio)
         ans = lc.margin()
         expected = -2
         self.assertAlmostEqual(ans, expected, places=self.tolerance_digits)
@@ -24,7 +26,8 @@ class TestLinkCalc(TestCase):
         distance = 2
         freq = 5000
         sens = -110.44
-        lc = RFTools.LinkCalc(freq, distance, tx_ant_gain, rx_ant_gain, tx_power, sens)
+        radio = RFTools.Radio(sens, tx_power)
+        lc = RFTools.LinkCalc(freq, distance, tx_ant_gain, rx_ant_gain, radio)
         ans = lc.distance(margin_dB=6)
         expected = 2
         self.assertAlmostEqual(ans, expected, places=self.tolerance_digits)
