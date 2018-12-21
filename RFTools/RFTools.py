@@ -1,4 +1,4 @@
-from math import log10, cos, pow, radians
+from math import log10, cos, pow, radians, pi
 from scipy import constants
 
 
@@ -41,11 +41,17 @@ class LinkCalc:
         self.radio_tx_power = radio_tx_power
         self.radio_sensitivity = radio_sensitivity
 
-    def margin(self):
+    def margin(self, dist_km=None):
+        if dist_km is None:
+            dist_km = self.dist_km
         eirp = self.radio_tx_power+self.ant_gain
-        pg = -1*fspl(self.freq_MHz, self.dist_km)
+        pg = -1*fspl(self.freq_MHz, dist_km)
         return (eirp+pg)-self.radio_sensitivity
 
+    def distance(self, margin_dB=3):
+        acceptable_pl = self.radio_tx_power + self.ant_gain + self.ant_gain - self.radio_sensitivity - margin_dB
+        dist_m = 10 ** ((acceptable_pl + 20 * log10(300000000 / (4 * pi * self.freq_MHz * 1000000))) / 20)
+        return dist_m/1000.0
 
 class tx:
     ant_gain = None
