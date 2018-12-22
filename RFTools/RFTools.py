@@ -45,7 +45,7 @@ class LinkCalc:
         self.rx_ant_gain = rx_ant_gain
         self.radio = radio
 
-    def margin(self, dist_km=None):
+    def margin(self, dist_km):
         eirp = self.radio.tx_power+self.tx_ant_gain
         pg = -1*fspl(self.freq_MHz, dist_km)
         return eirp + pg + self.rx_ant_gain - self.radio.rx_sens
