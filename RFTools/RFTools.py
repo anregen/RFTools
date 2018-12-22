@@ -35,21 +35,17 @@ def freq2wavelength(f, vel_prop=1):
 
 class LinkCalc:
     freq_MHz = None
-    dist_km = None
     tx_ant_gain = None
     rx_ant_gain = None
     radio = None
 
-    def __init__(self, freq_MHz, dist_km, tx_ant_gain, rx_ant_gain, radio):
+    def __init__(self, freq_MHz, tx_ant_gain, rx_ant_gain, radio):
         self.freq_MHz = freq_MHz
-        self.dist_km = dist_km
         self.tx_ant_gain = tx_ant_gain
         self.rx_ant_gain = rx_ant_gain
         self.radio = radio
 
     def margin(self, dist_km=None):
-        if dist_km is None:
-            dist_km = self.dist_km
         eirp = self.radio.tx_power+self.tx_ant_gain
         pg = -1*fspl(self.freq_MHz, dist_km)
         return eirp + pg + self.rx_ant_gain - self.radio.rx_sens
